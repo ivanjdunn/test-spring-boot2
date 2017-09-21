@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.hmhco.eas.demo</groupId>
+	<artifactId>spring-boot-bedrock</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.3.5.RELEASE</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+	</dependencies>
+	<properties>
+		<java.version>1.8</java.version>
+		<!-- Prefix of the docker project. Used in the docker deployments. -->
+		<docker.image.prefix>com-hmhco-ar</docker.image.prefix>
+		<!-- Some docker repo. Jenkins publish plugin does not use it (there is a job configuration parameter).
+             Any value would work if you do not want to upload docker image manually. -->
+		<docker.registry>docker.dev.aws.rpcsys.hmco.com</docker.registry>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- Enable docker plugin for local testing. -->
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<configuration>
+					<!-- This uses maven variables described above as well as variables defined by maven.
+                	     The format must match format used by the Jenkins Job. Keep this as is and create
+                	     a maven job from one of the existing ones.
+                	   -->
+					<imageName>${docker.registry}/${docker.image.prefix}/${project.artifactId}</imageName>
+					<!--
+                      A directory containing the docker file. This is different from default "src/main/docker" 
+                      to provide compatibility with the Bedrock/Aurora infrastructure (it looks for the
+                      docker file in the bedrock directory).
+                      Essentially this allows you to have one and only one configuration file for both local
+                      and bedrock environment thus eliminating possible bugs.
+                    -->
+                    <dockerHost>https://192.168.99.100:2376</dockerHost>
+                    <dockerCertPath>C:\Users\dunni\.docker\machine\machines\default</dockerCertPath>
+					<dockerDirectory>src/main/bedrock/docker</dockerDirectory>
+					<resources>
+						<!-- Configure resources available to the docker definition file. -->
+						<resource>
+							<targetPath>/</targetPath>
+							<!--This is the place from which all the included files are resolved. This value
+                              differs from the default to remove a difference between local and Jenkins 
+                              environment. Jenkins executes docker build in the project root (basedir). 
+                              Maven docker plugin uses {project.build.directory} (and this equals to
+                              {basedir}/target). Without this override docker file with correct local names would not work 
+                              inside Jenkins environment until files are copied. 
+                             -->
+							<directory>${basedir}</directory>
+							<!-- Files to make available to the Docker file. -->
+							<include>target/${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>Bedrock Snapsots</id>
+			<url>https://repo.br.hmheng.io/artifactory/libs-snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>Bedrock Releases</id>
+			<url>https://repo.br.hmheng.io/artifactory/libs-release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Bedrock Plugin Releases</id>
+			<name>plugins-release</name>
+			<url>https://repo.br.hmheng.io/artifactory/plugins-release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>Bedrock Plugin Snapsots</id>
+			<url>https://repo.br.hmheng.io/artifactory/plugins-snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+	<distributionManagement>
+		<repository>
+			<id>Bedrock Releases</id>
+			<name>libs-release-local</name>
+			<url>https://repo.br.hmheng.io/artifactory/libs-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>Bedrock Snapshots</id>
+			<name>libs-snapshot-local</name>
+			<url>https://repo.br.hmheng.io/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>
