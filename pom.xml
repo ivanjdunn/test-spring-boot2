@@ -18,7 +18,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<!-- Prefix of the docker project. Used in the docker deployments. -->
-		<docker.image.prefix>com-hmhco-ar</docker.image.prefix>
+		<docker.image.prefix>com-hmhco-custom-dev</docker.image.prefix>
 		<!-- Some docker repo. Jenkins publish plugin does not use it (there is a job configuration parameter).
              Any value would work if you do not want to upload docker image manually. -->
 		<docker.registry>docker.dev.aws.rpcsys.hmco.com</docker.registry>
@@ -47,8 +47,8 @@
                       Essentially this allows you to have one and only one configuration file for both local
                       and bedrock environment thus eliminating possible bugs.
                     -->
-                    <dockerHost>https://192.168.99.100:2376</dockerHost>
-                    <dockerCertPath>C:\Users\dunni\.docker\machine\machines\default</dockerCertPath>
+                    <!--<dockerHost>https://192.168.99.100:2376</dockerHost>
+                    <dockerCertPath>C:\Users\dunni\.docker\machine\machines\default</dockerCertPath>-->
 					<dockerDirectory>src/main/bedrock/docker</dockerDirectory>
 					<resources>
 						<!-- Configure resources available to the docker definition file. -->

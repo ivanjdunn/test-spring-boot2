@@ -1,8 +1,8 @@
 # define application variables
 CLUSTER_NAME= "brnpb"                          # ie. brnpb
 APP_NAME = "spring-boot-bedrock"                                 # ie. idm-idp
-APP_ROLE = "hmheng-demo"                                 # ie. hmheng-idm
-DOCKER_GROUP = "com-hmhco-ar"                         # ie. com-hmhco-idm or io-hmheng-demo
+APP_ROLE = "hmheng_customdev"                                 # ie. hmheng-idm
+DOCKER_GROUP = "com-hmhco-custom-dev"                         # ie. com-hmhco-idm or io-hmheng-demo
 DOCKER_REGISTRY = "docker.br.hmheng.io"                 # ie. docker.br.hmheng.io
 AWS_REGION = "us-east-1"                                # ie. us-east-1
 
